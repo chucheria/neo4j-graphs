@@ -1,0 +1,128 @@
+---
+title: "Neo4j gRaphs"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    toc: yes
+---
+
+## Introduction
+
+Thanks to the driver `RNeo4j` we can use the advantages of the database Neo4j within R. Treat with a new database can be scary and learning the language `Cypher` requires time and effort. In this demo we are going to import data from a Neo4j database into R and treat it like R objects.
+
+For this example we are going to talk about a *movie graph*, that means movies/actors/directors/... and the relationships between them. Get the data from the [Neo4j website](https://neo4j.com/developer/example-data/), or directly from the [GitHub repository](https://github.com/neo4j-examples/cineasts-spring-data-neo4j-3).
+
+## Set the environment
+
+First of all we need the driver to connect to Neo4j. Unfortunately this package is not on CRAN anymore but you can install it directly from [GitHub](https://github.com/nicolewhite/RNeo4j).
+I load dplyr to apply easy transformations on the dataframe.
+I also load igraph and [ggraph](https://cran.r-project.org/web/packages/ggraph/) to use the potential of R graph packages.
+
+Note: Before connecting you must start your database.
+
+```{r environment, message=FALSE}
+library(RNeo4j)
+library(dplyr)
+library(igraph)
+library(ggplot2)
+library(ggthemes)
+library(visNetwork)
+
+graph <- startGraph("http://localhost:7474/db/data/", username="neo4j", password="root")
+```
+
+## About graphs in Neo4j
+
+A graph is a very simple concept: **A graph G is a collection of entities (nodes) and the relationships (edges) that connect those entities _G = {N, E}_**
+
+In our movie database we can easily find an example listing the actor Kevin Bacon and the movies he has acted in:
+
+```{r kevin}
+q <- "MATCH (a:Actor { name: 'Kevin Bacon' })--(m:Movie) RETURN a.name AS from, m.title AS to, m.releaseDate AS epoch"
+bacon <- cypher(graph, q) %>%
+  mutate(epoch = as.numeric(epoch),
+         year = format(as.POSIXct(epoch/1000, origin="1970-01-01"), format="%Y"),
+         recent = ifelse(year >= 2000, TRUE, FALSE)) 
+
+ig = graph_from_data_frame(bacon)
+data <- toVisNetworkData(ig)
+visNetwork(nodes = data$nodes, edges = data$edges, height = "500px")
+```
+
+So the **nodes** are *Kevin Bacon* and the *movies* he has acted in. And the edges are the actual relationship *has acted in*. Both nodes and edges can posses searchable properties. Let's see the properties of a movie node, in this case _White Water Summer_, which is the first movie listed in our `bacon` dataframe.
+
+```{r properties}
+q <- paste0("Match (n:Movie {title: '", bacon[1,2],"' }) RETURN properties(n) AS properties")
+properties <- cypherToList(graph, q)
+
+purrr::map(properties, ~names(.x$properties))
+```
+
+We can make our relationships bidirectional or with one direction, it all depends on our definition of that relationship. In our case, Kevin Bacon **acts in**, so it will only have one direction. Neo4j doesn't work with undirectional graphs.
+
+We can add useful information to the node accompanied with a label which helps to group the nodes into sets. You can tell Neo4j to perform operation only in a given set, e.g. _search all actors born in New York_. 
+
+Labeling and adding properties works in relationships too, in our database the relationship *ACTS_IN* has the name of the character as property.
+
+```{r NY}
+q <- paste0("MATCH (a:Actor { birthplace: 'New York' }) RETURN a.name")
+NY <- cypher(graph, q)
+NY
+```
+
+## Query in Neo4j, analise in R
+
+Let's extract some data from our data base and visualise and analise directly in R. It's easy to start with the actors who have more movies in the database.
+
+```{r most_movies}
+q <- "MATCH (a:Actor)-[:ACTS_IN]->(m:Movie) RETURN a.name AS name, COUNT(m) AS movies ORDER BY movies DESC LIMIT 20"
+most_movies <- cypher(graph, q)
+
+ggplot(most_movies, aes(reorder(name, -movies), movies)) + 
+  geom_bar(stat="identity") +
+  theme_tufte() + 
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle("Actors who acted the most")
+```
+
+Let's see the genres of these movies, to see the most acted genre (can we adventure drama or action?)
+
+```{r most_genres}
+q <- "MATCH (a:Actor)-[:ACTS_IN]->(m:Movie) RETURN a.name AS name, m.genre AS genre, COUNT(m) AS count ORDER BY count DESC LIMIT 20"
+most_genres <- cypher(graph, q)
+
+ggplot(most_genres, aes(name, genre)) +
+  geom_tile(aes(fill = count)) + 
+  theme_tufte() + 
+  scale_fill_gradient(low = "white", high = "black") + 
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  ggtitle("Most acted genres and the actors who play them")
+```
+
+My friend Leti used to play this game in highschool: she chooses two actors/actresses and she must find the shortest path between them, taking movies as the middle nodes. You can also play with directors or any other type of cast. This is similar to the [Six degrees of Kevin Bacon](https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon) extended to any two actors.
+
+Let's play.
+```{r play}
+q <- "MATCH (a:Actor) RETURN a.name as name"
+actors <- cypher(graph, q)
+
+q <- "MATCH path=shortestPath((a1:Actor {name:{a1_name}})-[*]-(a2:Actor {name:{a2_name}})) RETURN path"
+names <- list(a1_name=sample(actors$name, 1), a2_name=sample(actors$name, 1))
+print(names)
+degree <- cypherToList(graph, q, names)
+degree[[1]][["path"]][["length"]]
+```
+
+We have the degree but it would be nice to have the whole path to see it.
+
+```{r}
+
+```
+
+[Let's Kahoot](https://play.kahoot.it/#/k/cc1a145d-977c-4654-9e73-339018c13870)
