@@ -6272,9 +6272,13 @@ $(document).ready(function () {
 <h2>Set the environment</h2>
 <p>First of all we need the driver to connect to Neo4j. Unfortunately this package is not on CRAN anymore but you can install it directly from <a href="https://github.com/nicolewhite/RNeo4j">GitHub</a>. I load dplyr to apply easy transformations on the dataframe. I also load igraph and <a href="https://cran.r-project.org/web/packages/ggraph/">ggraph</a> to use the potential of R graph packages.</p>
 <p>Note: Before connecting you must start your database.</p>
-<pre class="r"><code>library(RNeo4j)
+<pre class="r"><code># Connector
+library(RNeo4j)
+# Manipulate data
 library(dplyr)
+# Work with graphs
 library(igraph)
+# Visualize
 library(ggplot2)
 library(ggthemes)
 library(visNetwork)
@@ -6291,11 +6295,11 @@ bacon &lt;- cypher(graph, q) %&gt;%
          year = format(as.POSIXct(epoch/1000, origin=&quot;1970-01-01&quot;), format=&quot;%Y&quot;),
          recent = ifelse(year &gt;= 2000, TRUE, FALSE)) 
 
-ig = graph_from_data_frame(bacon)
+ig &lt;- graph_from_data_frame(bacon)
 data &lt;- toVisNetworkData(ig)
 visNetwork(nodes = data$nodes, edges = data$edges, height = &quot;500px&quot;)</code></pre>
-<div id="htmlwidget-a847078c71b7928d09b4" style="width:672px;height:500px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a847078c71b7928d09b4">{"x":{"nodes":{"id":["Kevin Bacon","White Water Summer","He Said, She Said","My Dog Skip","Rails & Ties","Diner","The Air I Breathe","She's Having a Baby","New York, I Love You","Death Sentence","hypnose","Frost-Nixon","Where the Truth Lies","The Woodsman","Picture Perfect","Hollow Man","Tremors","Trapped","The River Wild","National Lampoon's Animal House","Murder in the First","Friday the 13th","Planes, Trains and Automobiles","Footloose","Flatliners","A Few Good Men","JFK","Sleepers","Wild Things","Mystic River","Apollo 13"],"label":["Kevin Bacon","White Water Summer","He Said, She Said","My Dog Skip","Rails & Ties","Diner","The Air I Breathe","She's Having a Baby","New York, I Love You","Death Sentence","hypnose","Frost-Nixon","Where the Truth Lies","The Woodsman","Picture Perfect","Hollow Man","Tremors","Trapped","The River Wild","National Lampoon's Animal House","Murder in the First","Friday the 13th","Planes, Trains and Automobiles","Footloose","Flatliners","A Few Good Men","JFK","Sleepers","Wild Things","Mystic River","Apollo 13"]},"edges":{"from":["Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon"],"to":["White Water Summer","He Said, She Said","My Dog Skip","Rails & Ties","Diner","The Air I Breathe","She's Having a Baby","New York, I Love You","Death Sentence","hypnose","Frost-Nixon","Where the Truth Lies","The Woodsman","Picture Perfect","Hollow Man","Tremors","Trapped","The River Wild","National Lampoon's Animal House","Murder in the First","Friday the 13th","Planes, Trains and Automobiles","Footloose","Flatliners","A Few Good Men","JFK","Sleepers","Wild Things","Mystic River","Apollo 13"],"epoch":[552088800000,667177200000,947286000000,1188597600000,389224800000,1177797600000,571014000000,1233788400000,1188511200000,933112800000,1230246000000,1128636000000,1103842800000,861228000000,965167200000,632703600000,1032472800000,844034400000,270428400000,790556400000,326671200000,564793200000,445820400000,650239200000,724028400000,693183600000,845589600000,890348400000,1066168800000,803772000000],"year":["1987","1991","2000","2007","1982","2007","1988","2009","2007","1999","2008","2005","2004","1997","2000","1990","2002","1996","1978","1995","1980","1987","1984","1990","1992","1991","1996","1998","2003","1995"],"recent":[false,false,true,true,false,true,false,true,true,false,true,true,true,false,true,false,true,false,false,false,false,false,false,false,false,false,false,false,true,false]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"500px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-2c487f3ba79c94a4a664" style="width:672px;height:500px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2c487f3ba79c94a4a664">{"x":{"nodes":{"id":["Kevin Bacon","White Water Summer","He Said, She Said","My Dog Skip","Rails & Ties","Diner","The Air I Breathe","She's Having a Baby","New York, I Love You","Death Sentence","hypnose","Frost-Nixon","Where the Truth Lies","The Woodsman","Picture Perfect","Hollow Man","Tremors","Trapped","The River Wild","National Lampoon's Animal House","Murder in the First","Friday the 13th","Planes, Trains and Automobiles","Footloose","Flatliners","A Few Good Men","JFK","Sleepers","Wild Things","Mystic River","Apollo 13"],"label":["Kevin Bacon","White Water Summer","He Said, She Said","My Dog Skip","Rails & Ties","Diner","The Air I Breathe","She's Having a Baby","New York, I Love You","Death Sentence","hypnose","Frost-Nixon","Where the Truth Lies","The Woodsman","Picture Perfect","Hollow Man","Tremors","Trapped","The River Wild","National Lampoon's Animal House","Murder in the First","Friday the 13th","Planes, Trains and Automobiles","Footloose","Flatliners","A Few Good Men","JFK","Sleepers","Wild Things","Mystic River","Apollo 13"]},"edges":{"from":["Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon","Kevin Bacon"],"to":["White Water Summer","He Said, She Said","My Dog Skip","Rails & Ties","Diner","The Air I Breathe","She's Having a Baby","New York, I Love You","Death Sentence","hypnose","Frost-Nixon","Where the Truth Lies","The Woodsman","Picture Perfect","Hollow Man","Tremors","Trapped","The River Wild","National Lampoon's Animal House","Murder in the First","Friday the 13th","Planes, Trains and Automobiles","Footloose","Flatliners","A Few Good Men","JFK","Sleepers","Wild Things","Mystic River","Apollo 13"],"epoch":[552088800000,667177200000,947286000000,1188597600000,389224800000,1177797600000,571014000000,1233788400000,1188511200000,933112800000,1230246000000,1128636000000,1103842800000,861228000000,965167200000,632703600000,1032472800000,844034400000,270428400000,790556400000,326671200000,564793200000,445820400000,650239200000,724028400000,693183600000,845589600000,890348400000,1066168800000,803772000000],"year":["1987","1991","2000","2007","1982","2007","1988","2009","2007","1999","2008","2005","2004","1997","2000","1990","2002","1996","1978","1995","1980","1987","1984","1990","1992","1991","1996","1998","2003","1995"],"recent":[false,false,true,true,false,true,false,true,true,false,true,true,true,false,true,false,true,false,false,false,false,false,false,false,false,false,false,false,true,false]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"500px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 <p>So the <strong>nodes</strong> are <em>Kevin Bacon</em> and the <em>movies</em> he has acted in. And the edges are the actual relationship <em>has acted in</em>. Both nodes and edges can posses searchable properties. Let’s see the properties of a movie node, in this case <em>White Water Summer</em>, which is the first movie listed in our <code>bacon</code> dataframe.</p>
 <pre class="r"><code>q &lt;- paste0(&quot;Match (n:Movie {title: '&quot;, bacon[1,2],&quot;' }) RETURN properties(n) AS properties&quot;)
 properties &lt;- cypherToList(graph, q)
@@ -6306,6 +6310,27 @@ purrr::map(properties, ~names(.x$properties))</code></pre>
 ##  [5] &quot;runtime&quot;      &quot;language&quot;     &quot;title&quot;        &quot;version&quot;     
 ##  [9] &quot;imageUrl&quot;     &quot;genre&quot;        &quot;tagline&quot;      &quot;lastModified&quot;
 ## [13] &quot;id&quot;           &quot;homepage&quot;</code></pre>
+<pre class="r"><code>q &lt;- &quot;MATCH (a:Actor) -[r]- (m:Movie { title: 'Footloose' }) RETURN properties(r) AS properties&quot;
+properties &lt;- cypherToList(graph, q)
+
+purrr::map(properties, ~(.x$properties[[1]][1]))</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;Rusty&quot;
+## 
+## [[2]]
+## [1] &quot;Ariel Moore&quot;
+## 
+## [[3]]
+## [1] &quot;Willard Hewitt&quot;
+## 
+## [[4]]
+## [1] &quot;Vi Moore&quot;
+## 
+## [[5]]
+## [1] &quot;Reverend Shaw Moore&quot;
+## 
+## [[6]]
+## [1] &quot;Ren McCormack&quot;</code></pre>
 <p>We can make our relationships bidirectional or with one direction, it all depends on our definition of that relationship. In our case, Kevin Bacon <strong>acts in</strong>, so it will only have one direction. Neo4j doesn’t work with undirectional graphs.</p>
 <p>We can add useful information to the node accompanied with a label which helps to group the nodes into sets. You can tell Neo4j to perform operation only in a given set, e.g. <em>search all actors born in New York</em>.</p>
 <p>Labeling and adding properties works in relationships too, in our database the relationship <em>ACTS_IN</em> has the name of the character as property.</p>
@@ -6350,14 +6375,331 @@ ggplot(most_genres, aes(name, genre)) +
 <pre class="r"><code>q &lt;- &quot;MATCH (a:Actor) RETURN a.name as name&quot;
 actors &lt;- cypher(graph, q)
 
-q &lt;- paste0(&quot;MATCH path=shortestPath((a1:Actor {name:'&quot;,sample(actors$name, 1),&quot;'})-[*]-(a2:Actor {name:'&quot;,sample(actors$name, 1),&quot;'})) RETURN path, a1, 2&quot;)
-print(q)</code></pre>
-<pre><code>## [1] &quot;MATCH path=shortestPath((a1:Actor {name:'Moira Deady'})-[*]-(a2:Actor {name:'Mario Martín'})) RETURN path, a1, 2&quot;</code></pre>
-<pre class="r"><code>degree &lt;- cypherToList(graph, q)
-degree[[1]][[&quot;path&quot;]][[&quot;length&quot;]]</code></pre>
-<pre><code>## [1] 8</code></pre>
-<p>We have the degree but it would be nice to have the whole path to see it.</p>
-<p><a href="https://create.kahoot.it/details/neo4j-basics/cc1a145d-977c-4654-9e73-339018c13870">Let’s Kahoot</a></p>
+q &lt;- &quot;MATCH path=shortestPath((a1:Actor {name:{a1_name}})-[:ACTS_IN*]-(a2:Actor {name:{a2_name}})) RETURN NODES(path)&quot;
+# For directors
+# q &lt;- &quot;MATCH path=shortestPath((a1:Director {name:{a1_name}})-[:DIRECTED*]-(a2:Director {name:{a2_name}})) RETURN NODES(path)&quot;
+names &lt;- list(a1_name=sample(actors$name, 1), a2_name=sample(actors$name, 1))
+print(names)</code></pre>
+<pre><code>## $a1_name
+## [1] &quot;Padraic Delaney&quot;
+## 
+## $a2_name
+## [1] &quot;Marie Boitel&quot;</code></pre>
+<pre class="r"><code>shortest &lt;- cypherToList(graph, q, names)
+shortest</code></pre>
+<pre><code>## [[1]]
+## [[1]]$`NODES(path)`
+## [[1]]$`NODES(path)`[[1]]
+## &lt; Node &gt; 
+## Actor Person
+## 
+## $name
+## [1] &quot;Padraic Delaney&quot;
+## 
+## $lastModified
+## [1] &quot;1299494943000&quot;
+## 
+## $id
+## [1] &quot;15497&quot;
+## 
+## $biography
+## [1] &quot;&quot;
+## 
+## $version
+## [1] 15
+## 
+## 
+## [[1]]$`NODES(path)`[[2]]
+## &lt; Node &gt; 
+## Movie
+## 
+## $studio
+## [1] &quot;Sixteen Films Ltd.&quot;
+## 
+## $releaseDate
+## [1] &quot;1147903200000&quot;
+## 
+## $imdbId
+## [1] &quot;tt0460989&quot;
+## 
+## $runtime
+## [1] 124
+## 
+## $description
+## [1] &quot;A wartime drama about the 1920’s Irish revolution against the British. The Irish medical student Damian is about to start his new job in London as he is witness to the mercenary atrocities of the British and decides to join his brother in the resistance group I.R.A to fight for Irish independence. &quot;
+## 
+## $language
+## [1] &quot;en&quot;
+## 
+## $title
+## [1] &quot;The Wind That Shakes The Barley&quot;
+## 
+## $version
+## [1] 162
+## 
+## $trailer
+## [1] &quot;http://www.youtube.com/watch?v=zXm0yQ1k5b0&quot;
+## 
+## $imageUrl
+## [1] &quot;http://cf1.imgobject.com/posters/794/4bc90f35017a3c57fe005794/the-wind-that-shakes-the-barley-mid.jpg&quot;
+## 
+## $genre
+## [1] &quot;Action&quot;
+## 
+## $tagline
+## [1] &quot;&quot;
+## 
+## $lastModified
+## [1] &quot;1299985232000&quot;
+## 
+## $id
+## [1] &quot;1116&quot;
+## 
+## $homepage
+## [1] &quot;&quot;
+## 
+## 
+## [[1]]$`NODES(path)`[[3]]
+## &lt; Node &gt; 
+## Actor Person
+## 
+## $birthday
+## [1] &quot;201826800000&quot;
+## 
+## $birthplace
+## [1] &quot;Douglas, Cork, Ireland&quot;
+## 
+## $name
+## [1] &quot;Cillian Murphy&quot;
+## 
+## $lastModified
+## [1] &quot;1299952253000&quot;
+## 
+## $id
+## [1] &quot;2037&quot;
+## 
+## $biography
+## [1] &quot;Cillian Murphy is an Irish film and theatre actor. He is often noted by critics for his chameleonic performances in diverse roles and distinctive blue eyes.\n\nA native of Cork, Murphy began his performing career as a rock musician. After turning down a record deal, he made his professional acting debut in the play Disco Pigs in 1996. He went on to star in Irish and UK film and stage productions throughout the late 1990s and early 2000s, first coming to international attention in 2003 as the hero &quot;
+## 
+## $version
+## [1] 147
+## 
+## $profileImageUrl
+## [1] &quot;http://cf1.imgobject.com/profiles/029/4bc9fdca017a3c0e95000029/cillian-murphy-profile.jpg&quot;
+## 
+## 
+## [[1]]$`NODES(path)`[[4]]
+## &lt; Node &gt; 
+## Movie
+## 
+## $studio
+## [1] &quot;Company of Wolves&quot;
+## 
+## $releaseDate
+## [1] &quot;1062108000000&quot;
+## 
+## $imdbId
+## [1] &quot;tt0332658&quot;
+## 
+## $runtime
+## [1] 105
+## 
+## $description
+## [1] &quot;A raucous story of the interweaving lives and loves of small-town delinquents, shady cops, pretty good girls and very bad boys. With Irish guts and grit, lives collide, preconceptions shatter and romance is tested to the extreme. An ill-timed and poorly executed couple's break-up sets off a chain of events affecting everyone in town.&quot;
+## 
+## $language
+## [1] &quot;en&quot;
+## 
+## $title
+## [1] &quot;Intermission&quot;
+## 
+## $version
+## [1] 128
+## 
+## $trailer
+## [1] &quot;http://www.youtube.com/watch?v=MplooC8g3R0&quot;
+## 
+## $imageUrl
+## [1] &quot;http://cf1.imgobject.com/posters/212/4bc94de1017a3c57fe022212/intermission-mid.jpg&quot;
+## 
+## $genre
+## [1] &quot;Comedy&quot;
+## 
+## $tagline
+## [1] &quot;Life is what happens in between.&quot;
+## 
+## $lastModified
+## [1] &quot;1301904771000&quot;
+## 
+## $id
+## [1] &quot;16941&quot;
+## 
+## $homepage
+## [1] &quot;&quot;
+## 
+## 
+## [[1]]$`NODES(path)`[[5]]
+## &lt; Node &gt; 
+## Actor Person
+## 
+## $birthplace
+## [1] &quot;&quot;
+## 
+## $name
+## [1] &quot;Colin Farrell&quot;
+## 
+## $lastModified
+## [1] &quot;1299993319000&quot;
+## 
+## $id
+## [1] &quot;72466&quot;
+## 
+## $biography
+## [1] &quot;Colin James Farrell (born 31 May 1976) is a Golden Globe-, IFTA- and Satellite Award-winning Irish actor, who has appeared in Hollywood films including Tigerland, Daredevil, Miami Vice, Minority Report, Phone Booth, The Recruit, Alexander, In Bruges, and S.W.A.T.&quot;
+## 
+## $version
+## [1] 133
+## 
+## $profileImageUrl
+## [1] &quot;http://cf1.imgobject.com/profiles/045/4bc9936f017a3c1822000045/colin-farrell-profile.jpg&quot;
+## 
+## 
+## [[1]]$`NODES(path)`[[6]]
+## &lt; Node &gt; 
+## Movie
+## 
+## $studio
+## [1] &quot;Intermedia Films&quot;
+## 
+## $releaseDate
+## [1] &quot;1101250800000&quot;
+## 
+## $imdbId
+## [1] &quot;tt0346491&quot;
+## 
+## $runtime
+## [1] 176
+## 
+## $description
+## [1] &quot;Alexander, the King of Macedonia, leads his legions against the giant Persian Empire. After defeating the Persians he leads his Army across the then known world venturing further than any Westerner had ever gone all the way to India.&quot;
+## 
+## $language
+## [1] &quot;en&quot;
+## 
+## $title
+## [1] &quot;Alexander&quot;
+## 
+## $version
+## [1] 234
+## 
+## $trailer
+## [1] &quot;http://www.youtube.com/watch?v=eTDYKkUZJ6o&quot;
+## 
+## $imageUrl
+## [1] &quot;http://cf1.imgobject.com/posters/08d/4cae3d555e73d652b000008d/alexander-mid.jpg&quot;
+## 
+## $genre
+## [1] &quot;Adventure&quot;
+## 
+## $tagline
+## [1] &quot;&quot;
+## 
+## $lastModified
+## [1] &quot;1301906829000&quot;
+## 
+## $id
+## [1] &quot;1966&quot;
+## 
+## $homepage
+## [1] &quot;&quot;
+## 
+## 
+## [[1]]$`NODES(path)`[[7]]
+## &lt; Node &gt; 
+## Actor Person
+## 
+## $name
+## [1] &quot;Féodor Atkine&quot;
+## 
+## $lastModified
+## [1] &quot;1301901500000&quot;
+## 
+## $id
+## [1] &quot;20285&quot;
+## 
+## $biography
+## [1] &quot;&quot;
+## 
+## $version
+## [1] 53
+## 
+## 
+## [[1]]$`NODES(path)`[[8]]
+## &lt; Node &gt; 
+## Movie
+## 
+## $studio
+## [1] &quot;France 3 Cinéma&quot;
+## 
+## $releaseDate
+## [1] &quot;657241200000&quot;
+## 
+## $imdbId
+## [1] &quot;tt0312496&quot;
+## 
+## $runtime
+## [1] 90
+## 
+## $description
+## [1] &quot;No overview found.&quot;
+## 
+## $language
+## [1] &quot;en&quot;
+## 
+## $title
+## [1] &quot;Le bonheur des autres&quot;
+## 
+## $version
+## [1] 48
+## 
+## $genre
+## [1] &quot;Comedy&quot;
+## 
+## $tagline
+## [1] &quot;&quot;
+## 
+## $lastModified
+## [1] &quot;1301906181000&quot;
+## 
+## $id
+## [1] &quot;2448&quot;
+## 
+## $homepage
+## [1] &quot;&quot;
+## 
+## 
+## [[1]]$`NODES(path)`[[9]]
+## &lt; Node &gt; 
+## Actor Person
+## 
+## $birthplace
+## [1] &quot;&quot;
+## 
+## $name
+## [1] &quot;Marie Boitel&quot;
+## 
+## $lastModified
+## [1] &quot;1301901818000&quot;
+## 
+## $id
+## [1] &quot;25050&quot;
+## 
+## $biography
+## [1] &quot;&quot;
+## 
+## $version
+## [1] 20</code></pre>
+<p><a href="https://play.kahoot.it/#/k/cc1a145d-977c-4654-9e73-339018c13870">Let’s Kahoot</a></p>
 </section>
 
 

@@ -23,9 +23,13 @@ I also load igraph and [ggraph](https://cran.r-project.org/web/packages/ggraph/)
 Note: Before connecting you must start your database.
 
 ```{r environment, message=FALSE}
+# Connector
 library(RNeo4j)
+# Manipulate data
 library(dplyr)
+# Work with graphs
 library(igraph)
+# Visualize
 library(ggplot2)
 library(ggthemes)
 library(visNetwork)
@@ -46,7 +50,7 @@ bacon <- cypher(graph, q) %>%
          year = format(as.POSIXct(epoch/1000, origin="1970-01-01"), format="%Y"),
          recent = ifelse(year >= 2000, TRUE, FALSE)) 
 
-ig = graph_from_data_frame(bacon)
+ig <- graph_from_data_frame(bacon)
 data <- toVisNetworkData(ig)
 visNetwork(nodes = data$nodes, edges = data$edges, height = "500px")
 ```
@@ -58,6 +62,11 @@ q <- paste0("Match (n:Movie {title: '", bacon[1,2],"' }) RETURN properties(n) AS
 properties <- cypherToList(graph, q)
 
 purrr::map(properties, ~names(.x$properties))
+
+q <- "MATCH (a:Actor) -[r]- (m:Movie { title: 'Footloose' }) RETURN properties(r) AS properties"
+properties <- cypherToList(graph, q)
+
+purrr::map(properties, ~(.x$properties[[1]][1]))
 ```
 
 We can make our relationships bidirectional or with one direction, it all depends on our definition of that relationship. In our case, Kevin Bacon **acts in**, so it will only have one direction. Neo4j doesn't work with undirectional graphs.
@@ -112,16 +121,13 @@ Let's play.
 q <- "MATCH (a:Actor) RETURN a.name as name"
 actors <- cypher(graph, q)
 
-q <- "MATCH path=shortestPath((a1:Actor {name:{a1_name}})-[*]-(a2:Actor {name:{a2_name}})) RETURN path"
+q <- "MATCH path=shortestPath((a1:Actor {name:{a1_name}})-[:ACTS_IN*]-(a2:Actor {name:{a2_name}})) RETURN NODES(path)"
+# For directors
+# q <- "MATCH path=shortestPath((a1:Director {name:{a1_name}})-[:DIRECTED*]-(a2:Director {name:{a2_name}})) RETURN NODES(path)"
 names <- list(a1_name=sample(actors$name, 1), a2_name=sample(actors$name, 1))
 print(names)
-degree <- cypherToList(graph, q, names)
-degree[[1]][["path"]][["length"]]
-```
-
-We have the degree but it would be nice to have the whole path to see it.
-
-```{r}
+shortest <- cypherToList(graph, q, names)
+shortest
 
 ```
 

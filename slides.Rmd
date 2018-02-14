@@ -1,0 +1,108 @@
+---
+title: "Neo4j gRaphs"
+author: 'Bea Hernández'
+date: '`r Sys.Date()`'
+
+output: 
+  revealjs::revealjs_presentation:
+    css: rladies.css
+    highlight: pygments
+    transition: slide
+    
+---
+
+## About
+
+![](images/bea.JPG)
+
+Data Scientist focused on finding patterns and relations between online consumers. She also co-organizes [R-Ladies Madrid](rladies.org) and is a member of the [NASADatanauts](https://open.nasa.gov/explore/datanauts/2017/fall/#datanaut-beatriz-hernandez).
+
+## About
+
+1. About Graphs
+2. About Neo4j data in R
+3. About analyzing and visualizing Neo4j data in R
+
+# Graphs + Neo4j
+
+## Graphs + Neo4j {.title-h2}
+
+**A graph G is a collection of entities (nodes) and the relationships (edges) that connect those entities**
+
+**_G = {N, E}_**
+
+```{r, include=FALSE}
+# Connector
+library(RNeo4j)
+# Manipulate data
+library(dplyr)
+# Work with graphs
+library(igraph)
+# Visualize
+library(ggplot2)
+library(ggthemes)
+library(visNetwork)
+
+graph <- startGraph("http://localhost:7474/db/data/", username="neo4j", password="root")
+```
+
+```{r kevin, echo=FALSE}
+q <- "MATCH (a:Actor { name: 'Kevin Bacon' })--(m:Movie) RETURN a.name AS from, m.title AS to, m.releaseDate AS epoch"
+bacon <- cypher(graph, q) %>%
+  mutate(epoch = as.numeric(epoch),
+         year = format(as.POSIXct(epoch/1000, origin="1970-01-01"), format="%Y"),
+         recent = ifelse(year >= 2000, TRUE, FALSE)) 
+
+ig <- graph_from_data_frame(bacon)
+data <- toVisNetworkData(ig)
+visNetwork(nodes = data$nodes, edges = data$edges, height = "500px")
+```
+
+## Graphs + Neo4j {.title-h2}
+
+- _What does math say?_
+
+Graphs can be undirected 
+
+- _What does Neo4j say?_
+
+You have to make directed relationships.
+Forget about them when you make your queries.
+
+## Graphs + Neo4j {.title-h2}
+
+Nodes can have properties.
+
+Relationships can have properties.
+
+Node labels are the best. Gives us set advantages.
+
+```{r properties}
+q <- ("MATCH (n:Movie { title: 'Footloose' }) 
+      RETURN properties(n) AS properties")
+properties <- cypherToList(graph, q)
+
+purrr::map(properties, ~names(.x$properties))
+```
+
+# Neo4j + R
+
+## Neo4j + R {.title-h2}
+
+### Set your environment
+```{r environment, eval=FALSE}
+# Connector
+library(RNeo4j)
+# Manipulate data
+library(dplyr)
+# Work with graphs
+library(igraph)
+# Visualize
+library(ggplot2)
+library(ggthemes)
+library(visNetwork)
+
+graph <- startGraph("http://localhost:7474/db/data/", 
+                    username="", 
+                    password="")
+```
