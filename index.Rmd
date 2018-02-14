@@ -2,13 +2,13 @@
 title: "Neo4j gRaphs"
 author: 'Bea Hernández'
 date: '`r Sys.Date()`'
-
 output: 
   revealjs::revealjs_presentation:
     css: rladies.css
     highlight: pygments
     transition: slide
-    
+    fig_width: 6
+    fig_height: 4
 ---
 
 ## About
@@ -16,6 +16,8 @@ output:
 ![](images/bea.JPG)
 
 Data Scientist focused on finding patterns and relations between online consumers. She also co-organizes [R-Ladies Madrid](rladies.org) and is a member of the [NASADatanauts](https://open.nasa.gov/explore/datanauts/2017/fall/#datanaut-beatriz-hernandez).
+
+Twitter / Github : @Chucheria
 
 ## About
 
@@ -47,7 +49,8 @@ graph <- startGraph("http://localhost:7474/db/data/", username="neo4j", password
 ```
 
 ```{r kevin, echo=FALSE}
-q <- "MATCH (a:Actor { name: 'Kevin Bacon' })--(m:Movie) RETURN a.name AS from, m.title AS to, m.releaseDate AS epoch"
+q <- ("MATCH (a:Actor { name: 'Kevin Bacon' })-[r]-(m:Movie) 
+      RETURN a.name AS from, m.title AS to, m.releaseDate AS epoch")
 bacon <- cypher(graph, q) %>%
   mutate(epoch = as.numeric(epoch),
          year = format(as.POSIXct(epoch/1000, origin="1970-01-01"), format="%Y"),
@@ -59,6 +62,10 @@ visNetwork(nodes = data$nodes, edges = data$edges, height = "500px")
 ```
 
 ## Graphs + Neo4j {.title-h2}
+
+A graph database stores your data in a graph.
+
+Tables and foreign keys are nodes and relationships.
 
 - _What does math say?_
 
@@ -101,12 +108,107 @@ library(igraph)
 library(ggplot2)
 library(ggthemes)
 library(visNetwork)
+## If you want to use the Grammar of graphics
+# library(ggraph)
 
 graph <- startGraph("http://localhost:7474/db/data/", 
                     username="", 
                     password="")
 ```
 
-## Let's Kahoot!
+## Neo4j + R {.title-h2}
+
+
+```{r most_movies}
+q <- ("MATCH (a:Actor)-[:ACTS_IN]->(m:Movie) 
+      RETURN m.genre AS genre, COUNT(m) AS movies 
+      ORDER BY movies DESC
+      LIMIT 20")
+most_movies <- cypher(graph, q)
+```
+
+## Neo4j + R {.title-h2}
+
+```{r}
+ggplot(most_movies, aes(reorder(genre, -movies), movies)) + 
+  geom_bar(stat="identity") +
+  theme_tufte() + 
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle("Most played genres")
+```
+
+## Neo4j + R {.title-h2}
+
+```{r most_genres}
+q <- ("MATCH (a:Actor)-[:ACTS_IN]->(m:Movie) 
+      WHERE m.genre IN ['Comedy', 'Drama', 'Action'] 
+      RETURN a.name AS name, m.genre AS genre, COUNT(m) AS count 
+      ORDER BY count DESC 
+      LIMIT 30")
+most_genres <- cypher(graph, q)
+```
+
+## Neo4j + R {.title-h2}
+
+### Visualize
+```{r}
+ggplot(most_genres, aes(name, genre)) +
+  geom_tile(aes(fill = genre, alpha = count)) + 
+  theme_tufte() + 
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  ggtitle("Actors with most movies by genre ")
+```
+
+# RStats
+
+## RStats {.title-h2}
+
+### Betweenness centrality
+
+The betweenness centrality for each vertex is the number of these shortest paths that pass through the vertex. It represents the degree of which nodes stand between each other.
+
+$$betweenness(v) = \sum_{x \neq y \in V} \frac{\sigma_{xy}(v)}{\sigma_{xy}}$$
+
+
+```{r betweenness}
+q <- ("MATCH (a1:Actor)-[:ACTS_IN]->(m:Movie),
+      (a2:Actor)-[:ACTS_IN]->(m)
+      RETURN a1.name AS from, a2.name AS to, COUNT(*) AS weight 
+      ORDER BY weight DESC
+      LIMIT 10000")
+betweenness <- cypher(graph, q)
+ig <- graph_from_data_frame(betweenness)
+```
+## RStats {.title-h2}
+
+### Betweenness centrality
+```{r}
+b <- betweenness(ig)
+
+b[1:5]
+```
+## RStats {.title-h2}
+
+### Betweenness centrality
+```{r fig.height=5}
+V(ig)$label <- NA
+V(ig)$size = 4
+V(ig)$color = "cyan"
+
+plot(ig, edge.arrow.size = 0.1)
+```
+
+
+
+# Let's Kahoot!
+
+## Come and play
 
 [Kahoot](https://play.kahoot.it/#/k/cc1a145d-977c-4654-9e73-339018c13870)
+
+
+![](images/kahoot.png)

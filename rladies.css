@@ -55,10 +55,24 @@
 .reveal .controls .navigate-down.enabled:hover {
   border-top-color: #88398A; }
 
+.reveal pre {
+  font-size: 0.45em;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+  
+}
+
 .reveal pre sourceCode {
   background: #D3D3D3;
   color: #181818;
-  
+  font-size: 32px;
+  max-height: 800px;
+  line-height: 42px;
+}
+
+.sourceCode {
+  margin: 0 !important;
+  padding: 0.25em 0.5em !important;
+  background-color: #eee;
 }
 
 
@@ -72,11 +86,6 @@
   background: transparent;
   box-shadow: 0 0 0;
 }
-
-.reveal pre sourceCode {
-font-size: 36px;
-max-height: 800px;
-line-height: 45px;}
 
 .reveal a {
     color: #88398A;
